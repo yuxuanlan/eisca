@@ -400,10 +400,12 @@ def main(argv=None):
         adata.obs['group'] = [sample2group.get(x, x) for x in adata.obs['sample']]
 
     # merge samples with the name in column 'merge' if exists
-    if hasattr(samplesheet, 'merge') and sum(samplesheet['merge'].notna())>0:
-        ss1=samplesheet[samplesheet['merge'].notna()]
-        sample2merge = dict(zip(ss1['sample'], ss1['merge']))
-        adata.obs['sample'] = [sample2merge.get(x, x) for x in adata.obs['sample']]
+    #if hasattr(samplesheet, 'merge'):
+    if ('merge' in samplesheet.columns):
+        if sum(samplesheet['merge'].notna())>0:
+            ss1=samplesheet[samplesheet['merge'].notna()]
+            sample2merge = dict(zip(ss1['sample'], ss1['merge']))
+            adata.obs['sample'] = [sample2merge.get(x, x) for x in adata.obs['sample']]
 
     # save a filtered and normalized concated h5ad file
     adata.write_h5ad(Path(path_quant_qc, f'adata_filtered_normalized.h5ad'))
